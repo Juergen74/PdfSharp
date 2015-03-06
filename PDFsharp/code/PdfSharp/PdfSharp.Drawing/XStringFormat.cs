@@ -93,11 +93,35 @@ namespace PdfSharp.Drawing
     //public void Dispose();
     //private void Dispose(bool disposing);
     //protected override void Finalize();
-    //public float[] GetTabStops(out float firstTabOffset);
     //public void SetDigitSubstitution(int language, StringDigitSubstitute substitute);
     //public void SetMeasurableCharacterRanges(CharacterRange[] ranges);
-    //public void SetTabStops(float firstTabOffset, float[] tabStops);
     //public override string ToString();
+
+      /// <summary>
+      /// Sets tab stops for this XStringFormat object
+      /// </summary>
+      /// <param name="firstTabOffset">The number of spaces between the beginning of a line of text and the first tab stop.</param>
+      /// <param name="tabStops">An array of distances between tab stops in the units specified by the XGraphics.PageUnit property.</param>
+    public void SetTabStops(float firstTabOffset, float[] tabStops)
+    {
+#if GDI
+        this.stringFormat.SetTabStops(firstTabOffset, tabStops);
+#endif
+    }
+
+      /// <summary>
+      /// Gets the tab stops for this StringFormat object
+      /// </summary>
+      /// <param name="firstTabOffset">The number of spaces between the beginning of a text line and the first tab stop.</param>
+      /// <returns>An array of distances (in number of spaces) between tab stops.</returns>
+    public float[] GetTabStops(out float firstTabOffset)
+    {
+        float[] result;
+#if GDI
+        result = this.stringFormat.GetTabStops(out firstTabOffset);
+#endif
+        return result;
+    }
 
     /// <summary>
     /// Gets or sets horizontal text alignment information.
