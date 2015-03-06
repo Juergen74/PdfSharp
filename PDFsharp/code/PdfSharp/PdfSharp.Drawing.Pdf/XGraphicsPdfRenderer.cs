@@ -418,6 +418,40 @@ namespace PdfSharp.Drawing.Pdf
     {
       Realize(font, brush, 0);
 
+      // Handle XStringFormat TabStops
+      float firstTabOffset;
+      float[] tabs = format.GetTabStops(out firstTabOffset);
+      string[] sSplit = s.Split('\t');
+
+      if (tabs.Length > 0 && sSplit.Length > 1)
+      {
+          // Calculate absolute xOffset
+          float[] xOffset = new float[tabs.Length+1];
+          xOffset[0] = firstTabOffset;
+          for (int i = 0; i < tabs.Length; i++)
+          {
+              xOffset[i+1] = xOffset[i]+tabs[i];
+          }
+
+          // Draw each Tab-Part of the String as an individual-String on xOffset Position
+          for (int i = 0; i < sSplit.Length; i++)
+          {
+              XRect xRect = new XRect(rect.X, rect.Y, rect.Width, rect.Height);
+
+              if (i < xOffset.Length)
+              {
+                  xRect.X += xOffset[i];
+              }
+              else
+              {
+                  xRect.X += xOffset[xOffset.Length - 1];
+              }
+              DrawString(sSplit[i], font, brush, xRect, XStringFormats.TopLeft);
+          }
+          return;
+      }
+
+
       double x = rect.X;
       double y = rect.Y;
 
